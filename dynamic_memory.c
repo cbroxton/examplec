@@ -35,22 +35,22 @@ int main() {
 		y = round(y * 100) / 100;
 		z = round(z * 100) / 100;
 
-		*(*tmp) = x;
-		*(*tmp+1) = y;
-		*(*tmp+2) = z;
+		(*tmp)[0] = x;
+		(*tmp)[1] = y;
+		(*tmp)[2] = z;
 
-		current_size += 1;
+		current_size++;
 
 		if (current_size >= n) {
-			xyz = realloc(xyz, sizeof(double *) * (n + INCREMENT));
-			if (xyz == NULL) {
+			tmp = realloc(xyz, sizeof(double *) * (n + INCREMENT));
+			if (tmp == NULL) {
 				oops("realloc() error! ");
 			}
 			for (i = n; i < n + INCREMENT; i++) {
-				MALLOC(xyz[i], sizeof(double) * 3);
+				MALLOC(tmp[i], sizeof(double) * 3);
 			}
 
-			tmp = xyz;
+			xyz = tmp;
 			tmp += (n-1);
 			
 			n += INCREMENT;
@@ -59,9 +59,16 @@ int main() {
 		tmp++;
 	}
 
-	for (i = 0; i < current_size; i++) {
-		printf("%.2lf %.2lf %.2lf\n", *(xyz[i]), *(xyz[i]+1), *(xyz[i]+2));
+	fclose(data);
+
+	for (i = 0; i < n; i++) {
+		if (n < current_size) {
+			printf("%.2lf %.2lf %.2lf\n", xyz[i][0], xyz[i][1], xyz[i][2]);
+		}
+		free(xyz[i]);
 	}
+
+	free(xyz);
 
 	return EXIT_SUCCESS;
 }
